@@ -153,7 +153,12 @@
       top3.forEach(book => {
         const div = document.createElement("div");
         div.classList.add("result-card");
-        div.innerHTML = `<h3>${book.Titre}</h3><p><strong>Âge conseillé :</strong> ${book["Âge conseillé"]}</p><p>${book.Accroche}</p>`;
+       div.innerHTML = `
+  <h3>${book.Titre}</h3>
+  <p><strong>Âge conseillé :</strong> ${book["Âge conseillé"]}</p>
+  <p><strong>Genre :</strong> ${book.Genre}</p>
+  <p><strong>Accroche :</strong> ${book.Accroche}</p>
+`;
         container.appendChild(div);
       });
 
