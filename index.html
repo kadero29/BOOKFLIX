@@ -1,93 +1,119 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BOOKFLIX</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
     @keyframes fadeInNetflix {
-      0% { opacity: 0; transform: scale(1.1); }
+      0% { opacity: 0; transform: scale(1.2); }
       100% { opacity: 1; transform: scale(1); }
     }
+
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background-color: #141414;
       color: white;
-      margin: 0;
       padding: 20px;
+      font-size: 1.1em;
     }
     .banner {
-      background-color: black;
-      padding: 40px;
-      text-align: center;
+      background-color: #000;
+      height: 180px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 30px;
     }
     .banner h1 {
-      color: #e50914;
       font-size: 3em;
+      color: #e50914;
+      font-weight: bold;
       letter-spacing: 2px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
     }
     .progress-bar {
       width: 100%;
       background: #333;
       border-radius: 10px;
       overflow: hidden;
-      margin: 20px 0;
+      margin-bottom: 30px;
     }
     .progress {
       height: 10px;
       background: #e50914;
       width: 0%;
-      transition: width 0.4s ease;
+      transition: width 0.5s ease;
     }
     .questionnaire, .result {
       max-width: 800px;
       margin: auto;
     }
     .question {
-      animation: fadeInNetflix 0.5s ease;
+      margin-bottom: 25px;
     }
     h2 {
       color: #e50914;
     }
-    label {
+    .question label {
       display: block;
-      margin: 8px 0;
+      margin: 6px 0;
     }
     .button {
-      background: #e50914;
+      padding: 12px 24px;
+      background-color: #e50914;
       color: white;
       border: none;
-      padding: 10px 20px;
-      font-size: 1.1em;
       cursor: pointer;
-      margin-top: 20px;
-      display: inline-block;
+      font-size: 1.2em;
+      margin: 10px auto;
+      display: block;
     }
     .result-card {
-      background: #222;
-      border-left: 5px solid #e50914;
+      background: #1f1f1f;
+      margin-top: 20px;
       padding: 20px;
-      margin: 20px 0;
-      border-radius: 10px;
-      animation: fadeInNetflix 0.6s ease;
+      border-radius: 15px;
+      box-shadow: 0 0 25px rgba(229, 9, 20, 0.4);
+      animation: fadeInNetflix 0.8s ease forwards;
+      opacity: 0;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      border: 2px solid #e50914;
+      transition: transform 0.3s ease;
+    }
+    .result-card:hover {
+      transform: scale(1.02);
+      background-color: #292929;
     }
     .result-card h3 {
-      margin-top: 0;
       color: #e50914;
+      font-size: 1.5em;
+      margin: 0;
     }
-    .action-buttons {
-      text-align: center;
+    .result-card p {
+      margin: 0.3em 0;
+      line-height: 1.4;
+      color: #fff;
+    }
+    .return-button {
       margin-top: 30px;
-    }
-    .action-buttons .button {
-      margin: 10px;
-      background: transparent;
+      padding: 10px 20px;
+      background-color: transparent;
       border: 2px solid #e50914;
+      color: #e50914;
+      font-size: 1em;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
     }
-    .action-buttons .button:hover {
-      background: #e50914;
-      color: white;
+    .return-button:hover {
+      background-color: #e50914;
+      color: #fff;
     }
   </style>
 </head>
@@ -100,17 +126,15 @@
   <div class="questionnaire" id="questionnaire"></div>
 
   <div class="result" id="result" style="display:none;">
-    <h2>📚 Voici tes 3 lectures personnalisées :</h2>
+    <h2>✨ Voici tes 3 lectures personnalisées :</h2>
     <div id="resultsContainer"></div>
-    <div class="action-buttons">
-      <button class="button" onclick="downloadPDF()">📥 Télécharger en PDF</button>
-      <button class="button" onclick="location.reload()">🔁 Recommencer</button>
-    </div>
+    <button class="return-button" onclick="location.reload()">🔁 Recommencer le questionnaire</button>
+    <button class="return-button" onclick="window.location.href='https://kadero29.github.io/BOOKFLIX/'">🏠 Retour à l’accueil</button>
   </div>
 
   <script>
     const questions = [
-      {name: "ambiance", question: "1. Quelle ambiance de lecture cherches-tu ?", options: ["Détendue", "Intense", "Réfléchie", "Mystérieuse"]},
+      {name: "ambiance", question: "1. Quelle ambiance de lecture cherches-tu ?", options: ["Détendue", "Intense", "Réfléchie", "Poétique", "Historique"]},
       {name: "personnage", question: "2. Quel type de personnage principal t’attire ?", options: ["Aventurier", "Sensible", "Rebelle", "Différent", "Fantastique"]},
       {name: "personnageAge", question: "3. Le personnage principal doit-il avoir ton âge ?", options: ["Oui", "Pas nécessairement", "Je préfère un adulte"]},
       {name: "genre", question: "4. Quel genre préfères-tu lire ?", options: ["Roman réaliste", "Science-fiction", "Fantasy", "Historique", "Témoignage"]},
@@ -121,31 +145,30 @@
       {name: "adaptation", question: "9. Veux-tu lire un livre adapté en film ou en série ?", options: ["Oui", "Peu importe", "Non"]},
       {name: "style", question: "10. Quel style d’écriture préfères-tu ?", options: ["Poétique et imagé", "Immersif comme un film", "Avec des dialogues vivants", "Littéraire et travaillé", "Original ou inattendu"]},
       {name: "emotionLecture", question: "11. Quelles émotions supplémentaires cherches-tu à ressentir ?", options: ["Frissons", "Rires", "Réflexion", "Évasion"]},
+      {name: "format", question: "12. Préfères-tu des histoires :", options: ["Courtes et rythmées", "Longues et détaillées", "Découpées en chapitres courts", "Narrées à la première personne"]}
     ];
 
+    const data = [];
     let currentQuestion = 0;
     const answers = {};
-    const data = [];
 
     fetch("https://raw.githubusercontent.com/kadero29/BOOKFLIX/main/bookflix_base_corrige.json")
       .then(r => r.json())
-      .then(json => {
-        data.push(...json);
-        renderQuestion();
-      });
+      .then(json => data.push(...json))
+      .then(() => renderQuestion());
 
     function renderQuestion() {
       const container = document.getElementById("questionnaire");
       const q = questions[currentQuestion];
       const progress = document.getElementById("progress");
       progress.style.width = `${(currentQuestion / questions.length) * 100}%`;
-      container.innerHTML = `
-        <div class="question">
-          <h2>${q.question}</h2>
-          ${q.options.map(opt => `<label><input type="radio" name="${q.name}" value="${opt}"> ${opt}</label>`).join("")}
-          ${currentQuestion > 0 ? `<button class="button" onclick="prevQuestion()">⬅ Retour</button>` : ""}
-          <button class="button" onclick="nextQuestion()">Suivant</button>
-        </div>`;
+
+      container.innerHTML = `<div class="question">
+        <h2>${q.question}</h2>
+        ${q.options.map(opt => `<label><input type="radio" name="${q.name}" value="${opt}"> ${opt}</label>`).join("")}
+        ${currentQuestion > 0 ? '<button class="button" onclick="prevQuestion()">⬅️ Retour</button>' : ''}
+        <button class="button" onclick="nextQuestion()">Suivant</button>
+      </div>`;
     }
 
     function nextQuestion() {
@@ -159,57 +182,37 @@
     }
 
     function prevQuestion() {
-      currentQuestion--;
-      renderQuestion();
+      if (currentQuestion > 0) {
+        currentQuestion--;
+        renderQuestion();
+      }
     }
 
     function showResults() {
       document.getElementById("questionnaire").style.display = "none";
       document.getElementById("result").style.display = "block";
-      const results = data.map(book => {
+      const scored = data.map(book => {
         let score = 0;
-        for (const key in answers) {
+        for (let key in answers) {
           if (book[key]?.includes(answers[key])) score++;
         }
         return { ...book, score };
-      }).sort((a, b) => b.score - a.score).slice(0, 3);
+      });
 
+      const top3 = scored.sort((a, b) => b.score - a.score).slice(0, 3);
       const container = document.getElementById("resultsContainer");
-      container.innerHTML = results.map(book => `
-        <div class="result-card">
+      container.innerHTML = "";
+      top3.forEach(book => {
+        const div = document.createElement("div");
+        div.classList.add("result-card");
+        div.innerHTML = `
           <h3>${book.Titre}</h3>
           <p><strong>Âge conseillé :</strong> ${book["Âge conseillé"]}</p>
           <p><strong>Genre :</strong> ${book.Genre}</p>
           <p><strong>Accroche :</strong> ${book.Accroche}</p>
-        </div>`).join("");
-    }
-
-    function downloadPDF() {
-      const { jsPDF } = window.jspdf;
-      const doc = new jsPDF();
-      const img = new Image();
-      img.src = 'https://kadero29.github.io/BOOKFLIX/logo-bookflix.png';
-      img.onload = function () {
-        doc.addImage(img, 'PNG', 70, 10, 60, 20);
-        let y = 40;
-        doc.setFont("helvetica", "bold");
-        doc.setFontSize(14);
-        doc.text("Mes recommandations Bookflix", 20, y);
-        y += 10;
-        document.querySelectorAll(".result-card").forEach(card => {
-          card.querySelectorAll("h3, p").forEach(el => {
-            if (y > 270) {
-              doc.addPage();
-              y = 20;
-            }
-            doc.setFont("helvetica", el.tagName === "H3" ? "bold" : "normal");
-            doc.text(el.innerText, 20, y);
-            y += 8;
-          });
-          y += 4;
-        });
-        doc.save("bookflix_recommandations.pdf");
-      };
+        `;
+        container.appendChild(div);
+      });
     }
   </script>
 </body>
