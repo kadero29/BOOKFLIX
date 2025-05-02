@@ -218,9 +218,7 @@
     function downloadResults() {
       const container = document.getElementById("resultsContainer");
       const textContent = container.innerText;
-      const blob = new Blob(["Voici tes recommandations Bookflix :
-
-" + textContent], { type: "text/plain" });
+      const blob = new Blob(["Voici tes recommandations Bookflix :\n\n" + textContent], { type: "text/plain" });
       const link = document.createElement("a");
       link.href = URL.createObjectURL(blob);
       link.download = "recommandations_bookflix.txt";
