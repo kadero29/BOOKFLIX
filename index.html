@@ -130,26 +130,25 @@
   </div>
   <script>
     const questions = [
-      {name: "ambiance", question: "1. Quelle ambiance de lecture cherches-tu ?", options: ["Détendue", "Intense", "Réfléchie", "Poétique", "Historique"]},
-      {name: "personnage", question: "2. Quel type de personnage principal t’attire ?", options: ["Aventurier", "Sensible", "Rebelle", "Différent", "Fantastique"]},
-      {name: "personnageAge", question: "3. Le personnage principal doit-il avoir ton âge ?", options: ["Oui", "Pas nécessairement", "Je préfère un adulte"]},
-      {name: "genre", question: "4. Quel genre préfères-tu lire ?", options: ["Roman réaliste", "Science-fiction", "Fantasy", "Historique", "Témoignage"]},
-      {name: "age", question: "5. Quel est ton âge ?", options: ["11-12 ans", "13-14 ans", "15 et plus"]},
-      {name: "theme", question: "6. Quel thème t’attire le plus ?", options: ["Aventure", "Amitié", "Amour", "Résistance", "Identité"]},
-      {name: "emotion", question: "7. Quelle émotion veux-tu ressentir ?", options: ["Suspense", "Émerveillement", "Joie", "Nostalgie"]},
-      {name: "monde", question: "8. Préfères-tu des histoires situées dans :", options: ["Un monde réel", "Un monde imaginaire", "Dans un passé lointain"]},
-      {name: "adaptation", question: "9. Veux-tu lire un livre adapté en film ou en série ?", options: ["Oui", "Peu importe", "Non"]},
-      {name: "style", question: "10. Quel style d’écriture préfères-tu ?", options: ["Poétique et imagé", "Immersif comme un film", "Avec des dialogues vivants", "Littéraire et travaillé", "Original ou inattendu"]},
-      {name: "emotionLecture", question: "11. Quelles émotions supplémentaires cherches-tu à ressentir ?", options: ["Frissons", "Rires", "Réflexion", "Évasion"]},
-      {name: "format", question: "12. Préfères-tu des histoires :", options: ["Courtes et rythmées", "Longues et détaillées", "Découpées en chapitres courts", "Narrées à la première personne"]}
+      { name: "ambiance", question: "1. Quelle ambiance de lecture cherches-tu ?", options: ["Détendue", "Intense", "Réfléchie", "Poétique", "Historique"] },
+      { name: "personnage", question: "2. Quel type de personnage principal t’attire ?", options: ["Aventurier", "Sensible", "Rebelle", "Différent", "Fantastique"] },
+      { name: "personnageAge", question: "3. Le personnage principal doit-il avoir ton âge ?", options: ["Oui", "Pas nécessairement", "Je préfère un adulte"] },
+      { name: "genre", question: "4. Quel genre préfères-tu lire ?", options: ["Roman réaliste", "Science-fiction", "Fantasy", "Historique", "Témoignage"] },
+      { name: "age", question: "5. Quel est ton âge ?", options: ["11-12 ans", "13-14 ans", "15 et plus"] },
+      { name: "theme", question: "6. Quel thème t’attire le plus ?", options: ["Aventure", "Amitié", "Amour", "Résistance", "Identité"] },
+      { name: "emotion", question: "7. Quelle émotion veux-tu ressentir ?", options: ["Suspense", "Émerveillement", "Joie", "Nostalgie"] },
+      { name: "monde", question: "8. Préfères-tu des histoires situées dans :", options: ["Un monde réel", "Un monde imaginaire", "Dans un passé lointain"] },
+      { name: "adaptation", question: "9. Veux-tu lire un livre adapté en film ou en série ?", options: ["Oui", "Peu importe", "Non"] },
+      { name: "style", question: "10. Quel style d’écriture préfères-tu ?", options: ["Avec beaucoup de dialogues", "Avec des images fortes", "Avec des descriptions sensibles", "Avec un ton drôle ou décalé", "Avec une langue poétique"] },
+      { name: "emotionLecture", question: "11. Quelles émotions supplémentaires cherches-tu à ressentir ?", options: ["Frissons", "Rires", "Réflexion", "Évasion"] },
+      { name: "format", question: "12. Préfères-tu des histoires :", options: ["Courtes et rythmées", "Longues et détaillées", "Découpées en chapitres courts", "Narrées à la première personne"] }
     ];
 
     const data = [];
     let currentQuestion = 0;
     const answers = {};
 
-    fetch("https://raw.githubusercontent.com/kadero29/BOOKFLIX/main/bookflix_final_complet.json")
-
+    fetch("https://raw.githubusercontent.com/kadero29/BOOKFLIX/main/bookflix_final_complet_enrichi.json")
       .then(r => r.json())
       .then(json => data.push(...json))
       .then(() => renderQuestion());
@@ -190,16 +189,17 @@
       const scored = data.map(book => {
         let score = 0;
         for (let key in answers) {
+          const cle = key.charAt(0).toUpperCase() + key.slice(1);
           if (key === "adaptation") {
             if (
-              answers.adaptation === "Oui" && book["Adapté au cinéma"] === "Oui" ||
-              answers.adaptation === "Non" && book["Adapté au cinéma"] === "Non" ||
-              answers.adaptation === "Peu importe"
+              answers[key] === "Oui" && book["Adapté au cinéma"] === "Oui" ||
+              answers[key] === "Non" && book["Adapté au cinéma"] === "Non" ||
+              answers[key] === "Peu importe"
             ) {
               score++;
             }
-          } else {
-            if (book[key]?.includes(answers[key])) score++;
+          } else if (book[cle]?.includes(answers[key])) {
+            score++;
           }
         }
         return { ...book, score };
