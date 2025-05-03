@@ -9,7 +9,6 @@
       0% { opacity: 0; transform: scale(1.2); }
       100% { opacity: 1; transform: scale(1); }
     }
-
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background-color: #141414;
@@ -122,16 +121,13 @@
     <h1>BOOKFLIX</h1>
   </div>
   <div class="progress-bar"><div class="progress" id="progress"></div></div>
-
   <div class="questionnaire" id="questionnaire"></div>
-
   <div class="result" id="result" style="display:none;">
     <h2>✨ Voici tes 3 lectures personnalisées :</h2>
     <div id="resultsContainer"></div>
     <button class="return-button" onclick="location.reload()">🔁 Recommencer le questionnaire</button>
     <button class="return-button" onclick="window.location.href='https://kadero29.github.io/BOOKFLIX/'">🏠 Retour à l’accueil</button>
   </div>
-
   <script>
     const questions = [
       {name: "ambiance", question: "1. Quelle ambiance de lecture cherches-tu ?", options: ["Détendue", "Intense", "Réfléchie", "Poétique", "Historique"]},
@@ -152,7 +148,7 @@
     let currentQuestion = 0;
     const answers = {};
 
-    fetch("https://raw.githubusercontent.com/kadero29/BOOKFLIX/main/bookflix_base_corrige.json")
+    fetch("https://raw.githubusercontent.com/kadero29/BOOKFLIX/main/bookflix_final_complet.json")
       .then(r => r.json())
       .then(json => data.push(...json))
       .then(() => renderQuestion());
@@ -162,7 +158,6 @@
       const q = questions[currentQuestion];
       const progress = document.getElementById("progress");
       progress.style.width = `${(currentQuestion / questions.length) * 100}%`;
-
       container.innerHTML = `<div class="question">
         <h2>${q.question}</h2>
         ${q.options.map(opt => `<label><input type="radio" name="${q.name}" value="${opt}"> ${opt}</label>`).join("")}
@@ -194,7 +189,17 @@
       const scored = data.map(book => {
         let score = 0;
         for (let key in answers) {
-          if (book[key]?.includes(answers[key])) score++;
+          if (key === "adaptation") {
+            if (
+              answers.adaptation === "Oui" && book["Adapté au cinéma"] === "Oui" ||
+              answers.adaptation === "Non" && book["Adapté au cinéma"] === "Non" ||
+              answers.adaptation === "Peu importe"
+            ) {
+              score++;
+            }
+          } else {
+            if (book[key]?.includes(answers[key])) score++;
+          }
         }
         return { ...book, score };
       });
@@ -209,6 +214,7 @@
           <h3>${book.Titre}</h3>
           <p><strong>Âge conseillé :</strong> ${book["Âge conseillé"]}</p>
           <p><strong>Genre :</strong> ${book.Genre}</p>
+          <p><strong>Adapté au cinéma :</strong> ${book["Adapté au cinéma"]}</p>
           <p><strong>Accroche :</strong> ${book.Accroche}</p>
         `;
         container.appendChild(div);
