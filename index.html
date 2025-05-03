@@ -149,6 +149,7 @@
     const answers = {};
 
     fetch("https://raw.githubusercontent.com/kadero29/BOOKFLIX/main/bookflix_final_complet.json")
+
       .then(r => r.json())
       .then(json => data.push(...json))
       .then(() => renderQuestion());
